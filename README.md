@@ -93,4 +93,4 @@ LateCommerApp is an application that takes an employee’s Name, Email, Address 
 
 
 
-![Alt text](https://github.com/elderjames314/latecommerapp/src/main/resources/static/img/img/re2.png?raw=true "Entity Relattionship Diagram")
+![Alt text](https://github.com/elderjames314/latecommerapp/blob/master/re2.png?raw=true "Entity Relattionship Diagram")
