@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee late commer app.</title>
+    <script th:src="@{js/jquery.min.js}"></script>
+    <script th:src="@{js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <script th:src="@{js/main.js}"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Employee Clock in App</h2>
+        <hr>
+        <button class="btn btn-success addbtn">Add new employee</button>
+        <br>
+
+        <div class="card">
+            <div class="card-block">
+
+                <form th:action="@{/frontend/search}" method="get">
+                    <div class="form-group">
+                        <label for="search" class="col-form-label">Search employee by name or email or address:</label>
+                        <input type="text" required class="form-control"
+                               id="search" name="search" value="" placeholder="Search employee by name or email or address and Hit Enter">
+                    </div>
+                </form>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Total late in minutes</th>
+                        <th>Total fees payable</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="employee :${data.employeeResources}">
+                            <td th:text="${employee.name}"></td>
+                            <td th:text="${employee.email}"></td>
+                            <td th:text="${employee.address}"></td>
+                            <td th:text="${employee.minutes}"></td>
+                            <td th:text="${employee.fee}"></td>
+                            <td>
+                                <a th:href="@{/frontend/employees/(id=${employee.id})}" title="Edit employee" class="ebtn">
+                                    <i class="fa fa-pencil text-success"></i></a>
+                                &nbsp;&nbsp;
+
+                                <a th:href="@{/frontend/delete-employees/(id=${employee.id})}" title="Delete employee" class="delbtn">
+                                    <i class="fa fa-times text-danger"></i></a>
+                                &nbsp;&nbsp;
+                                <a th:href="@{/frontend/employees/(id=${employee.id})}" title="Clock in" class="clockbtn">
+                                    <i class="fa fa-clock-o text-warning"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+
+                <ul class="nav nav-pills">
+                    <li class="nav-item" th:each="i : ${#numbers.sequence(0, data.totalPages-1)}">
+                        <a th:href="@{/(pageNo=${i})}" th:text="${i}"  class="nav-link" th:classappend="${currentPage}==${i} ? 'active' : '' "></a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="myForm">
+            <form th:action="@{frontend/save}" method="post">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Update or Create Employee</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <input type="hidden" name="Id" id="Id" value="">
+
+                                <div class="form-group">
+                                    <label for="name" class="col-form-label">Name:</label>
+                                    <input type="text" required class="form-control" id="name" name="name" value="">
+                                </div>
+                            <div class="form-group">
+                                <label for="email" class="col-form-label">Email:</label>
+                                <input type="email" required class="form-control" id="email" name="email" value="">
+                            </div>
+                                <div class="form-group">
+                                    <label for="address" class="col-form-label">Address:</label>
+                                    <textarea class="form-control" id="address" name="address"></textarea>
+                                </div>
+
+                            <hr>
+                            <div>Late in minutes: <strong><span #minute>0</span></strong></div>
+                            <br>
+                            <div>Total amount owes: <strong><span #amount>0</span></strong></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save employee</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </form>
+
+        </div>
+
+        <div class="modal" id="deleteDialog" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="alert alert-danger">
+                            Are you sure you want to delete this employee...
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="" type="button" class="btn btn-danger" id="delRef">Delete</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="myClockInForm">
+            <form method="post" th:action="@{frontend/employee/clockin}">
+                <div class="modal" id="clockInDialog" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Clock in</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="Id" id="Id" value="">
+                                <div>Name: <strong><span id="employeeName"></span></strong></div>
+
+                                <p class="alert alert-danger">
+                                    Are you sure you want to clock in now :
+                                    <span th:text="${#calendars.format(today,'dd MMMM yyyy HH:mm:ss')}"></span>
+                                </p>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Clock in</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
