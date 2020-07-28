@@ -89,7 +89,7 @@ LateCommerApp is an application that takes an employee’s Name, Email, Address 
     
 *   Minor
     *   REST-Assured for APi Testing
-    *   Swagger for documentation
+    *   Swagger for documentation : path -> http://localhost:8085/swagger-ui.html
 
 
 
